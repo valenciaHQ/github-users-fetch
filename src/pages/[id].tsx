@@ -1,7 +1,7 @@
 /** @format */
 
 import Image from "next/image";
-import { User } from "./types";
+import { User } from "../types";
 import Link from "next/link";
 import styles from "@/styles/UserDetail.module.css";
 

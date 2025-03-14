@@ -4,7 +4,7 @@ import Head from "next/head";
 import Image from "next/image";
 import styles from "@/styles/Home.module.css";
 import { useEffect, useState } from "react";
-import { User } from "./types";
+import { User } from "../types";
 import Filter from "@/components/Filter/Filter";
 import { useSearchParams } from "next/navigation";
 import Skeleton from "react-loading-skeleton";

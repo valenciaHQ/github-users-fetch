@@ -1,6 +1,6 @@
 /** @format */
 
-import { User } from "@/pages/types";
+import { User } from "@/types";
 import Image from "next/image";
 
 import styles from "./UserCard.module.css";
