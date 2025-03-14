@@ -1,19 +1,44 @@
+/** @format */
+
 import Head from "next/head";
 import Image from "next/image";
-import { Geist, Geist_Mono } from "next/font/google";
 import styles from "@/styles/Home.module.css";
-
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
+import { useEffect, useState } from "react";
+import { User } from "./types";
+import Filter from "@/components/Filter/Filter";
+import { useSearchParams } from "next/navigation";
+import Skeleton from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
+import Link from "next/link";
 
 export default function Home() {
+  const [users, setUsers] = useState<User[]>([]);
+  const [loading, setLoading] = useState(false);
+  const params = useSearchParams();
+
+  useEffect(() => {
+    const init = async () => {
+      setLoading(true);
+      let url = "https://api.github.com/users";
+      const query = params.get("q");
+      if (query) {
+        url = `https://api.github.com/search/users?q=${query}`;
+      }
+      try {
+        const response = await fetch(url);
+        const data = await response.json();
+
+        //This is to handle the case when the query is present, response model is different
+        setUsers(query ? data.items : data);
+        setLoading(false);
+      } catch (error) {
+        console.error("An error occurred", error);
+        setLoading(false);
+      }
+    };
+    init();
+  }, [params]);
+
   return (
     <>
       <Head>
@@ -22,94 +47,47 @@ export default function Home() {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <div
-        className={`${styles.page} ${geistSans.variable} ${geistMono.variable}`}
-      >
+      <div className={styles.container}>
         <main className={styles.main}>
-          <Image
-            className={styles.logo}
-            src="/next.svg"
-            alt="Next.js logo"
-            width={180}
-            height={38}
-            priority
-          />
-          <ol>
-            <li>
-              Get started by editing <code>src/pages/index.tsx</code>.
-            </li>
-            <li>Save and see your changes instantly.</li>
-          </ol>
-
-          <div className={styles.ctas}>
-            <a
-              className={styles.primary}
-              href="https://vercel.com/new?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <Image
-                className={styles.logo}
-                src="/vercel.svg"
-                alt="Vercel logomark"
-                width={20}
-                height={20}
-              />
-              Deploy now
-            </a>
-            <a
-              href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-              target="_blank"
-              rel="noopener noreferrer"
-              className={styles.secondary}
-            >
-              Read our docs
-            </a>
-          </div>
+          <Filter />
+          {loading ? (
+            <div className={styles.grid}>
+              {Array.from({ length: 12 }).map((_, index) => (
+                <Skeleton
+                  key={index}
+                  count={1}
+                  height={150}
+                  className={styles.skeleton}
+                />
+              ))}
+            </div>
+          ) : (
+            <div className={styles.grid}>
+              {users.map((user) => (
+                <div key={user.id} className={styles.card}>
+                  <Image
+                    src={user.avatar_url}
+                    alt={user.login}
+                    width={250}
+                    height={250}
+                    className={styles.avatar}
+                  />
+                  <div className={styles.cardBody}>
+                    <h2>{user.login}</h2>
+                    <Link href={`/${user.login}`}>View profile</Link>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
         </main>
         <footer className={styles.footer}>
-          <a
-            href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              aria-hidden
-              src="/file.svg"
-              alt="File icon"
-              width={16}
-              height={16}
-            />
-            Learn
-          </a>
-          <a
-            href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              aria-hidden
-              src="/window.svg"
-              alt="Window icon"
-              width={16}
-              height={16}
-            />
-            Examples
-          </a>
-          <a
-            href="https://nextjs.org?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              aria-hidden
-              src="/globe.svg"
-              alt="Globe icon"
-              width={16}
-              height={16}
-            />
-            Go to nextjs.org →
-          </a>
+          <p>
+            Made by
+            <a href="https://valenciahq.com/" target="_blank" rel="noreferrer">
+              ValenciaHQ
+            </a>
+          </p>
         </footer>
       </div>
     </>
