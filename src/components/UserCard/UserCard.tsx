@@ -1,14 +1,25 @@
 /** @format */
 
-import { User } from "@/types";
+import React from "react";
 import Image from "next/image";
-
 import styles from "./UserCard.module.css";
+import { User } from "@/types";
+import { FaStar, FaRegStar } from "react-icons/fa";
 import Link from "next/link";
 
-export default function UserCard({ user }: { user: User }) {
+interface UserCardProps {
+  user: User;
+  isFavorite: boolean;
+  onToggleFavorite: () => void;
+}
+
+const UserCard: React.FC<UserCardProps> = ({
+  user,
+  isFavorite,
+  onToggleFavorite,
+}) => {
   return (
-    <div key={user.id} className={styles.card}>
+    <div className={styles.card}>
       <Image
         src={user.avatar_url}
         alt={user.login}
@@ -19,7 +30,12 @@ export default function UserCard({ user }: { user: User }) {
       <div className={styles.cardBody}>
         <h2>{user.login}</h2>
         <Link href={`/${user.id}`}>View profile</Link>
+        <button onClick={onToggleFavorite} className={styles.favoriteButton}>
+          {isFavorite ? <FaStar /> : <FaRegStar />}
+        </button>
       </div>
     </div>
   );
-}
+};
+
+export default UserCard;

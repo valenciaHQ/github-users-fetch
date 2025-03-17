@@ -28,3 +28,12 @@
   margin: 0 auto;
   display: block;
 }
+
+.favoriteButton {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: gold;
+  font-size: 1.5rem;
+  margin-top: 10px;
+}

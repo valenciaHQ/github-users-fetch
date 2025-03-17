@@ -1,16 +1,15 @@
 /** @format */
 
-.container {
-  max-width: 1200px;
-  margin: 0 auto;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-}
-
-.main {
+.body {
   padding: 24px;
 }
+
+.heading {
+  text-align: center;
+  margin-bottom: 1rem;
+  font-size: 48px;
+}
+
 .grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
@@ -32,13 +31,4 @@
   margin: 0 auto;
   display: block;
   background-color: #ccc;
-}
-
-.footer {
-  margin-top: auto;
-
-  & > p {
-    text-align: center;
-    padding: 1rem;
-  }
 }
